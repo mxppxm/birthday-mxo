@@ -1,0 +1,1618 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <title>星空下的生日愿望 ✨</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><radialGradient id='bg' cx='50%' cy='50%' r='50%'><stop offset='0%' style='stop-color:%23667eea;stop-opacity:1' /><stop offset='100%' style='stop-color:%232d1b4e;stop-opacity:1' /></radialGradient><linearGradient id='cake' x1='0%' y1='0%' x2='0%' y2='100%'><stop offset='0%' style='stop-color:%23ffd700;stop-opacity:1' /><stop offset='100%' style='stop-color:%23ffb6c1;stop-opacity:1' /></linearGradient></defs><circle cx='50' cy='50' r='48' fill='url(%23bg)'/><path d='M35 60 L35 75 C35 78 37 80 40 80 L60 80 C63 80 65 78 65 75 L65 60 Z' fill='url(%23cake)'/><rect x='35' y='50' width='30' height='10' rx='2' fill='%23ff69b4'/><line x1='50' y1='50' x2='50' y2='42' stroke='%23ffd700' stroke-width='2'/><ellipse cx='50' cy='40' rx='4' ry='6' fill='%23ffff00' opacity='0.9'/><path d='M50 37 L51 35 L52 37 L54 36 L53 38 L55 39 L53 40 L54 42 L52 41 L51 43 L50 41 L49 43 L48 41 L46 42 L47 40 L45 39 L47 38 L46 36 L48 37 L49 35 Z' fill='%23fff' opacity='0.95'/><circle cx='25' cy='25' r='2' fill='%23fff' opacity='0.9'><animate attributeName='opacity' values='0.5;1;0.5' dur='2s' repeatCount='indefinite'/></circle><circle cx='75' cy='30' r='1.5' fill='%23ffd700' opacity='0.8'><animate attributeName='opacity' values='0.4;1;0.4' dur='1.5s' repeatCount='indefinite'/></circle><circle cx='80' cy='70' r='1.5' fill='%2387ceeb' opacity='0.9'><animate attributeName='opacity' values='0.6;1;0.6' dur='1.8s' repeatCount='indefinite'/></circle></svg>"
+      type="image/svg+xml"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+        -webkit-touch-callout: none;
+      }
+
+      body {
+        font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+        overflow: hidden;
+        background: #ffffff;
+        color: #fff;
+        position: relative;
+        height: 100vh;
+        transition: background 3s ease-in-out;
+      }
+
+      body.started {
+        background: linear-gradient(to bottom, #0a0e27, #1a1245, #2d1b4e);
+      }
+
+      /* 星空背景 */
+      .starry-sky {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        z-index: 1;
+        opacity: 0;
+        transition: opacity 3.5s ease-in;
+      }
+
+      body.started .starry-sky {
+        opacity: 1;
+      }
+
+      .star {
+        position: absolute;
+        background: white;
+        border-radius: 50%;
+        animation: twinkle 3s infinite;
+      }
+
+      @keyframes twinkle {
+        0%,
+        100% {
+          opacity: 0.3;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.2);
+        }
+      }
+
+      /* 烟花效果 */
+      .firework {
+        position: fixed;
+        pointer-events: none;
+        z-index: 100;
+      }
+
+      .firework-trail {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        background: white;
+        border-radius: 50%;
+        box-shadow: 0 0 10px currentColor;
+        animation: fireworkRise 1s ease-out forwards;
+      }
+
+      @keyframes fireworkRise {
+        0% {
+          transform: translateY(0);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(-200px);
+          opacity: 0.8;
+        }
+      }
+
+      .firework-particle {
+        position: fixed;
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 99;
+        box-shadow: 0 0 12px currentColor, 0 0 20px currentColor,
+          0 0 30px currentColor;
+        filter: brightness(1.5);
+      }
+
+      @keyframes fireworkExplode {
+        0% {
+          opacity: 1;
+          transform: translate(0, 0) scale(1);
+          filter: brightness(2);
+        }
+        50% {
+          opacity: 1;
+          filter: brightness(1.5);
+        }
+        100% {
+          opacity: 0;
+          transform: translate(var(--tx), var(--ty)) scale(0.5);
+          filter: brightness(0.5);
+        }
+      }
+
+      /* 烟花中心祝福语 */
+      .firework-text {
+        position: fixed;
+        pointer-events: none;
+        z-index: 101;
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: white;
+        text-shadow: 0 0 10px currentColor, 0 0 20px currentColor,
+          0 0 30px currentColor, 0 2px 5px rgba(0, 0, 0, 0.5);
+        animation: textAppear 1.5s ease-out forwards;
+        white-space: nowrap;
+      }
+
+      @keyframes textAppear {
+        0% {
+          opacity: 0;
+          transform: translate(-50%, -50%) scale(0.5);
+        }
+        20% {
+          opacity: 1;
+          transform: translate(-50%, -50%) scale(1.2);
+        }
+        80% {
+          opacity: 1;
+          transform: translate(-50%, -50%) scale(1);
+        }
+        100% {
+          opacity: 0;
+          transform: translate(-50%, -50%) scale(0.8);
+        }
+      }
+
+      /* 内容容器 */
+      .content {
+        position: relative;
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        text-align: center;
+      }
+
+      /* 第一幕：初始提示 */
+      .scene-1 {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 1;
+        transition: opacity 1s ease;
+        cursor: pointer;
+        z-index: 100;
+      }
+
+      .scene-1.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      /* 第二幕：标题 */
+      .scene-2 {
+        opacity: 0;
+        display: none;
+        transition: opacity 1.5s ease;
+      }
+
+      .scene-2.active {
+        opacity: 1;
+        display: block;
+      }
+
+      .main-title {
+        font-size: 3rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        background: linear-gradient(45deg, #ffec00, #ffb6c1, #87ceeb);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: titleGlow 2s ease-in-out;
+      }
+
+      .sub-title {
+        font-size: 1.5rem;
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: 3rem;
+        animation: fadeIn 2s ease 1s both;
+      }
+
+      @keyframes titleGlow {
+        0% {
+          opacity: 0;
+          transform: translateY(-30px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* 通用按钮样式 */
+      .next-btn {
+        padding: 18px 60px;
+        font-size: 1.3rem;
+        background: rgba(255, 236, 0, 0.35);
+        border: none;
+        border-radius: 50px;
+        color: white;
+        cursor: not-allowed;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+        animation: fadeIn 1s ease 2.5s both;
+        box-shadow: 0 4px 20px rgba(255, 236, 0, 0.4);
+        pointer-events: none;
+      }
+
+      .next-btn.active {
+        pointer-events: auto;
+        cursor: pointer;
+      }
+
+      .next-btn.active:hover {
+        background: rgba(255, 236, 0, 0.5);
+        transform: scale(1.05);
+        box-shadow: 0 6px 30px rgba(255, 236, 0, 0.6);
+      }
+
+      /* 第三幕：祝福卡片 */
+      .scene-3 {
+        opacity: 0;
+        display: none;
+        transition: opacity 1s ease;
+        position: relative;
+      }
+
+      .scene-3.active {
+        opacity: 1;
+        display: block;
+      }
+
+      .wish-card {
+        width: 450px;
+        height: 350px;
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        border: none;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        animation: cardAppear 1.2s ease;
+        cursor: pointer;
+        position: relative;
+        perspective: 1000px;
+        transition: all 0.3s ease;
+      }
+
+      .wish-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+      }
+
+      @keyframes cardAppear {
+        0% {
+          opacity: 0;
+          transform: scale(0.8) translateY(50px);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1) translateY(0);
+        }
+      }
+
+      .card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        transform-style: preserve-3d;
+        transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+        -webkit-transform-style: preserve-3d;
+      }
+
+      .wish-card.opened .card-inner {
+        transform: rotateX(-180deg);
+        -webkit-transform: rotateX(-180deg);
+      }
+
+      .card-front,
+      .card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        padding: 50px;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        border-radius: 20px;
+        overflow: hidden;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.12) 0%,
+          rgba(255, 236, 0, 0.1) 50%,
+          rgba(255, 105, 180, 0.1) 100%
+        );
+        backdrop-filter: blur(25px);
+      }
+
+      .card-back {
+        transform: rotateX(180deg);
+        -webkit-transform: rotateX(180deg);
+      }
+
+      /* 卡片继续按钮 */
+      .card-continue-btn {
+        margin-top: 2.5rem;
+        padding: 12px 35px;
+        font-size: 1rem;
+        background: rgba(255, 236, 0, 0.3);
+        border: none;
+        border-radius: 30px;
+        color: #fff;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        opacity: 0;
+        animation: fadeIn 0.5s ease 2.5s forwards;
+        box-shadow: 0 4px 15px rgba(255, 236, 0, 0.2);
+      }
+
+      .card-continue-btn:hover {
+        background: rgba(255, 236, 0, 0.4);
+        transform: scale(1.05);
+        box-shadow: 0 6px 25px rgba(255, 236, 0, 0.4);
+      }
+
+      .card-front h2 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        color: #fff;
+      }
+
+      .card-back p {
+        font-size: 1.3rem;
+        line-height: 2;
+        color: rgba(255, 255, 255, 0.95);
+        white-space: pre-line;
+      }
+
+      .card-back .signature {
+        margin-top: 2rem;
+        font-size: 1.1rem;
+        color: rgba(255, 236, 0, 0.9);
+        font-style: italic;
+      }
+
+      /* 第四幕：许愿输入 */
+      .scene-4 {
+        opacity: 0;
+        display: none;
+        transition: opacity 1s ease;
+      }
+
+      .scene-4.active {
+        opacity: 1;
+        display: block;
+      }
+
+      .wish-input-container {
+        animation: fadeIn 1s ease;
+      }
+
+      .wish-prompt {
+        font-size: 1.8rem;
+        margin-bottom: 2rem;
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .wish-input {
+        width: 500px;
+        max-width: 90vw;
+        min-height: 120px;
+        padding: 25px 30px;
+        font-size: 1.2rem;
+        font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+        line-height: 1.8;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.12) 0%,
+          rgba(255, 236, 0, 0.1) 50%,
+          rgba(255, 105, 180, 0.1) 100%
+        );
+        border: none;
+        border-radius: 15px;
+        color: white;
+        backdrop-filter: blur(20px);
+        margin-bottom: 2rem;
+        outline: none;
+        transition: all 0.3s ease;
+        resize: vertical;
+      }
+
+      .wish-input::placeholder {
+        color: rgba(255, 255, 255, 0.4);
+        font-style: normal;
+      }
+
+      .wish-input::-webkit-input-placeholder {
+        color: rgba(255, 255, 255, 0.4);
+      }
+
+      .wish-input::-moz-placeholder {
+        color: rgba(255, 255, 255, 0.4);
+      }
+
+      .wish-input:focus {
+        box-shadow: 0 0 30px rgba(255, 236, 0, 0.4);
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.15) 0%,
+          rgba(255, 236, 0, 0.12) 50%,
+          rgba(255, 105, 180, 0.12) 100%
+        );
+      }
+
+      /* textarea 滚动条美化 */
+      .wish-input::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      .wish-input::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 4px;
+      }
+
+      .wish-input::-webkit-scrollbar-thumb {
+        background: rgba(255, 236, 0, 0.3);
+        border-radius: 4px;
+      }
+
+      .wish-input::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 236, 0, 0.5);
+      }
+
+      .create-btn {
+        padding: 18px 60px;
+        font-size: 1.3rem;
+        background: rgba(255, 236, 0, 0.3);
+        border: none;
+        border-radius: 50px;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 20px rgba(255, 236, 0, 0.3);
+      }
+
+      .create-btn:hover {
+        background: rgba(255, 236, 0, 0.4);
+        transform: scale(1.05);
+        box-shadow: 0 6px 30px rgba(255, 236, 0, 0.5);
+      }
+
+      .create-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      /* 愿望卡片预览 */
+      .wish-card-preview {
+        display: none;
+        animation: fadeIn 1s ease;
+      }
+
+      .wish-card-preview.active {
+        display: block;
+      }
+
+      .user-wish-card {
+        width: 550px;
+        max-width: 90vw;
+        background: linear-gradient(
+          135deg,
+          rgba(138, 43, 226, 0.15),
+          rgba(75, 0, 130, 0.1),
+          rgba(72, 61, 139, 0.15)
+        );
+        backdrop-filter: blur(25px);
+        border-radius: 25px;
+        border: none;
+        padding: 55px 50px;
+        box-shadow: 0 15px 45px rgba(138, 43, 226, 0.3);
+        margin-bottom: 2rem;
+        animation: wishCardAppear 1s ease;
+        position: relative;
+        overflow: visible;
+      }
+
+      /* 愿望卡片装饰星星 */
+      .user-wish-card::after {
+        content: "✨";
+        position: absolute;
+        top: -15px;
+        right: -15px;
+        font-size: 2rem;
+        animation: starRotate 3s linear infinite;
+      }
+
+      @keyframes starRotate {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .wish-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px dashed rgba(255, 255, 255, 0.3);
+      }
+
+      .wish-card-title {
+        font-size: 1.3rem;
+        color: rgba(255, 236, 0, 0.95);
+        font-weight: 600;
+        letter-spacing: 2px;
+      }
+
+      .wish-card-decorations {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        font-size: 1.2rem;
+        opacity: 0.6;
+      }
+
+      .wish-card-decorations-right {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        font-size: 1.2rem;
+        opacity: 0.6;
+      }
+
+      .user-wish-card::before {
+        content: "";
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        background: linear-gradient(
+          45deg,
+          #667eea,
+          #764ba2,
+          #f093fb,
+          #4facfe,
+          #667eea
+        );
+        border-radius: 25px;
+        z-index: -1;
+        opacity: 0.6;
+        background-size: 300% 300%;
+        animation: gradientFlow 4s ease infinite;
+      }
+
+      @keyframes gradientFlow {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      @keyframes wishCardAppear {
+        0% {
+          opacity: 0;
+          transform: scale(0.9) translateY(30px);
+        }
+        60% {
+          transform: scale(1.03) translateY(-5px);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1) translateY(0);
+        }
+      }
+
+      .user-wish-card .wish-icon {
+        font-size: 4rem;
+        margin-bottom: 1.5rem;
+        animation: iconPulse 2s ease-in-out infinite;
+        text-shadow: 0 0 20px rgba(255, 236, 0, 0.8),
+          0 0 40px rgba(255, 236, 0, 0.4);
+      }
+
+      @keyframes iconPulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+      }
+
+      .user-wish-card .wish-text {
+        font-size: 1.6rem;
+        line-height: 1.8;
+        color: rgba(255, 255, 255, 0.95);
+        margin-bottom: 2rem;
+        word-wrap: break-word;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        font-weight: 500;
+        letter-spacing: 0.5px;
+      }
+
+      .user-wish-card .wish-time {
+        font-size: 0.95rem;
+        color: rgba(255, 255, 255, 0.65);
+        font-style: italic;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .user-wish-card .wish-time::before {
+        content: "📅 ";
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .send-btn,
+      .edit-btn {
+        padding: 16px 38px;
+        font-size: 1.2rem;
+        border: none;
+        border-radius: 50px;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .send-btn {
+        background: rgba(255, 236, 0, 0.3);
+        box-shadow: 0 4px 20px rgba(255, 236, 0, 0.3);
+      }
+
+      .send-btn:hover {
+        background: rgba(255, 236, 0, 0.4);
+        transform: scale(1.05);
+        box-shadow: 0 6px 30px rgba(255, 236, 0, 0.5);
+      }
+
+      .edit-btn {
+        background: rgba(255, 255, 255, 0.15);
+        box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+      }
+
+      .edit-btn:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: scale(1.05);
+        box-shadow: 0 6px 25px rgba(255, 255, 255, 0.2);
+      }
+
+      /* 愿望流星 */
+      .wish-meteor {
+        position: fixed;
+        color: white;
+        font-size: 1.4rem;
+        font-weight: 600;
+        padding: 15px 30px;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 236, 0, 0.5),
+          rgba(255, 182, 193, 0.4),
+          rgba(138, 43, 226, 0.3)
+        );
+        border-radius: 25px;
+        backdrop-filter: blur(15px);
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        animation: wishFly 3.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        z-index: 100;
+        pointer-events: none;
+        box-shadow: 0 0 30px rgba(255, 236, 0, 0.8),
+          0 0 60px rgba(255, 182, 193, 0.6), 0 0 90px rgba(138, 43, 226, 0.4);
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5),
+          0 0 20px rgba(255, 255, 255, 0.8);
+        letter-spacing: 1px;
+      }
+
+      @keyframes wishFly {
+        0% {
+          opacity: 1;
+          transform: translate(-50%, -50%) scale(1) rotate(0deg);
+          filter: brightness(1);
+        }
+        10% {
+          transform: translate(-50%, -50%) scale(1.15) rotate(5deg);
+          filter: brightness(1.3);
+        }
+        25% {
+          transform: translate(calc(-50% - 100px), calc(-50% - 100px))
+            scale(1.1) rotate(-10deg);
+        }
+        50% {
+          opacity: 1;
+          transform: translate(calc(-50% - 300px), calc(-50% - 300px))
+            scale(0.8) rotate(-25deg);
+          filter: brightness(1.5);
+        }
+        75% {
+          opacity: 0.6;
+          transform: translate(calc(-50% - 500px), calc(-50% - 500px))
+            scale(0.4) rotate(-35deg);
+        }
+        100% {
+          opacity: 0;
+          transform: translate(calc(-50% - 700px), calc(-50% - 700px))
+            scale(0.1) rotate(-45deg);
+          filter: brightness(2);
+        }
+      }
+
+      /* 第五幕：结束语 */
+      .scene-5 {
+        opacity: 0;
+        display: none;
+        transition: opacity 1.5s ease;
+      }
+
+      .scene-5.active {
+        opacity: 1;
+        display: block;
+      }
+
+      .final-message {
+        font-size: 2rem;
+        line-height: 1.8;
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: 3rem;
+        animation: fadeIn 2s ease;
+      }
+
+      .replay-btn {
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        background: rgba(255, 255, 255, 0.15);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50px;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+        animation: fadeIn 2s ease 1s both;
+      }
+
+      .replay-btn:hover {
+        background: rgba(255, 255, 255, 0.25);
+        border-color: rgba(255, 255, 255, 0.6);
+        transform: scale(1.05);
+        box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+      }
+
+      /* 响应式 */
+      @media (max-width: 768px) {
+        .main-title {
+          font-size: 2rem;
+        }
+
+        .sub-title {
+          font-size: 1.2rem;
+        }
+
+        .wish-card {
+          width: 90vw;
+          max-width: 400px;
+          height: 320px;
+          min-height: 320px;
+          -webkit-transform: translateZ(0);
+          transform: translateZ(0);
+        }
+
+        .wish-input {
+          width: 90vw;
+        }
+
+        .user-wish-card {
+          width: 90vw;
+          padding: 30px 20px;
+        }
+
+        .user-wish-card .wish-text {
+          font-size: 1.3rem;
+        }
+
+        .action-buttons {
+          flex-direction: column;
+          gap: 0.8rem;
+        }
+
+        .action-buttons button {
+          width: 100%;
+          padding: 12px 25px;
+          font-size: 1.1rem;
+        }
+
+        .wish-card-title {
+          font-size: 1.1rem;
+        }
+
+        .wish-card-decorations,
+        .wish-card-decorations-right {
+          font-size: 1rem;
+        }
+
+        .final-message {
+          font-size: 1.5rem;
+          padding: 0 20px;
+        }
+
+        .next-btn {
+          padding: 15px 50px;
+          font-size: 1.2rem;
+        }
+
+        .card-front,
+        .card-back {
+          padding: 30px 25px;
+        }
+
+        .card-front h2 {
+          font-size: 1.4rem;
+        }
+
+        .card-back p {
+          font-size: 1.05rem;
+          line-height: 1.7;
+        }
+
+        .card-back .signature {
+          margin-top: 1.5rem;
+          font-size: 1rem;
+        }
+
+        .card-continue-btn {
+          margin-top: 1.8rem;
+          padding: 10px 25px;
+          font-size: 0.9rem;
+        }
+
+        .wish-prompt {
+          font-size: 1.5rem;
+          padding: 0 20px;
+        }
+
+        .wish-input {
+          padding: 20px;
+          font-size: 1rem;
+          min-height: 100px;
+        }
+
+        .create-btn {
+          padding: 15px 45px;
+          font-size: 1.2rem;
+        }
+
+        .user-wish-card .wish-icon {
+          font-size: 3rem;
+        }
+
+        .user-wish-card .wish-time {
+          font-size: 0.9rem;
+        }
+
+        .firework-text {
+          font-size: 1.5rem;
+        }
+
+        .replay-btn {
+          padding: 12px 35px;
+          font-size: 1rem;
+        }
+      }
+
+      /* 小屏手机优化 */
+      @media (max-width: 480px) {
+        body {
+          font-size: 14px;
+        }
+
+        .main-title {
+          font-size: 1.6rem;
+        }
+
+        .sub-title {
+          font-size: 1rem;
+        }
+
+        .next-btn {
+          padding: 12px 40px;
+          font-size: 1.1rem;
+        }
+
+        .wish-card {
+          width: 95vw;
+          max-width: 380px;
+          height: 280px;
+          min-height: 280px;
+          -webkit-transform: translateZ(0);
+          transform: translateZ(0);
+        }
+
+        .card-front,
+        .card-back {
+          padding: 20px 18px;
+        }
+
+        .card-front h2 {
+          font-size: 1.2rem;
+        }
+
+        .card-back p {
+          font-size: 0.95rem;
+          line-height: 1.6;
+        }
+
+        .card-back .signature {
+          margin-top: 1.2rem;
+          font-size: 0.9rem;
+        }
+
+        .card-continue-btn {
+          margin-top: 1.3rem;
+          padding: 8px 20px;
+          font-size: 0.85rem;
+        }
+
+        .wish-prompt {
+          font-size: 1.3rem;
+        }
+
+        .wish-input {
+          width: 95vw;
+          padding: 18px;
+          font-size: 0.95rem;
+          min-height: 90px;
+        }
+
+        .create-btn {
+          padding: 12px 40px;
+          font-size: 1.1rem;
+        }
+
+        .user-wish-card {
+          width: 95vw;
+          padding: 35px 20px;
+        }
+
+        .user-wish-card .wish-icon {
+          font-size: 2.5rem;
+        }
+
+        .user-wish-card .wish-text {
+          font-size: 1.1rem;
+        }
+
+        .user-wish-card .wish-time {
+          font-size: 0.85rem;
+        }
+
+        .wish-card-title {
+          font-size: 1rem;
+        }
+
+        .action-buttons button {
+          padding: 12px 25px;
+          font-size: 1rem;
+        }
+
+        .firework-text {
+          font-size: 1.2rem;
+        }
+
+        .final-message {
+          font-size: 1.3rem;
+        }
+
+        .replay-btn {
+          padding: 10px 30px;
+          font-size: 0.95rem;
+        }
+      }
+
+      /* 音乐控制按钮 */
+      .music-control {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        backdrop-filter: blur(10px);
+        z-index: 1000;
+        transition: all 0.3s ease;
+        opacity: 0;
+      }
+
+      body.started .music-control {
+        display: flex;
+      }
+
+      .music-control.visible {
+        opacity: 1;
+      }
+
+      .music-control:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: scale(1.1);
+      }
+
+      .music-control::before {
+        content: "🔊";
+        font-size: 1.5rem;
+      }
+
+      .music-control.paused::before {
+        content: "🔇";
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 星空背景 -->
+    <div class="starry-sky" id="starry-sky"></div>
+
+    <!-- 内容容器 -->
+    <div class="content">
+      <!-- 第一幕：空白夜空 -->
+      <div class="scene-1" id="scene1" onclick="startExperience()"></div>
+
+      <!-- 第二幕：星空亮起 -->
+      <div class="scene-2" id="scene2">
+        <h1 class="main-title">🎂 生日快乐，老妹儿 🎂</h1>
+        <p class="sub-title">今晚，所有的星星都为你闪烁</p>
+        <button class="next-btn" onclick="showWishCard()">✨</button>
+      </div>
+
+      <!-- 第三幕：祝福卡片 -->
+      <div class="scene-3" id="scene3">
+        <div class="wish-card" id="wishCard" onclick="openCard()">
+          <div class="card-inner">
+            <div class="card-front">
+              <h2>💌 来自哥哥的祝福</h2>
+            </div>
+            <div class="card-back">
+              <p>
+                愿你像这片星空一样，<br />闪闪发光，<br />永远温柔、自由、明亮。
+              </p>
+              <div class="signature">—— 来自哥哥的星空祝福 💌</div>
+              <button
+                class="card-continue-btn"
+                onclick="event.stopPropagation(); showWishInput()"
+              >
+                许个愿吧 ✨
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 第四幕：许愿环节 -->
+      <div class="scene-4" id="scene4">
+        <!-- 输入愿望 -->
+        <div class="wish-input-container" id="wishInputContainer">
+          <p class="wish-prompt">许个愿吧～</p>
+          <textarea
+            class="wish-input"
+            id="wishInput"
+            placeholder="写下你的愿望..."
+            maxlength="200"
+            rows="4"
+          ></textarea>
+          <br />
+          <button class="create-btn" onclick="createWishCard()">
+            发向星空 ✨
+          </button>
+        </div>
+
+        <!-- 愿望卡片预览 -->
+        <div class="wish-card-preview" id="wishCardPreview">
+          <div class="user-wish-card" id="userWishCard">
+            <div class="wish-card-decorations">🌙</div>
+            <div class="wish-card-decorations-right">⭐</div>
+            <div class="wish-card-header">
+              <span>🎂</span>
+              <div class="wish-card-title">生日愿望卡</div>
+              <span>🎂</span>
+            </div>
+            <div class="wish-icon">🌟</div>
+            <div class="wish-text" id="wishText"></div>
+            <div class="wish-time" id="wishTime"></div>
+          </div>
+          <div class="action-buttons">
+            <button class="edit-btn" onclick="editWish()">改一改</button>
+            <button class="send-btn" onclick="sendWishToSky()">
+              飞向星空 ✨
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 第五幕：结束语 -->
+      <div class="scene-5" id="scene5">
+        <p class="final-message">
+          愿你此生灿烂如星河，<br />
+          平安喜乐常相随。
+        </p>
+        <button class="replay-btn" onclick="replay()">再许一个 ✨</button>
+      </div>
+    </div>
+
+    <!-- 音乐控制 -->
+    <div class="music-control" id="musicControl" onclick="toggleMusic()"></div>
+
+    <!-- 背景音乐 -->
+    <audio id="bgMusic" loop>
+      <source src="xiaomeiman.mp3" type="audio/mpeg" />
+    </audio>
+
+    <script>
+      // 全局变量
+      let currentScene = 1;
+      let cardFlipped = false;
+      const bgMusic = document.getElementById("bgMusic");
+      const musicControl = document.getElementById("musicControl");
+
+      // 初始化星空
+      function initStars() {
+        const starrySkY = document.getElementById("starry-sky");
+        const starCount = 100;
+
+        for (let i = 0; i < starCount; i++) {
+          const star = document.createElement("div");
+          star.className = "star";
+          star.style.left = Math.random() * 100 + "%";
+          star.style.top = Math.random() * 100 + "%";
+          star.style.width = Math.random() * 3 + 1 + "px";
+          star.style.height = star.style.width;
+          star.style.animationDelay = Math.random() * 3 + "s";
+          star.style.animationDuration = Math.random() * 2 + 2 + "s";
+          starrySkY.appendChild(star);
+        }
+      }
+
+      // 创建烟花
+      function createFirework(x, y, color) {
+        // 创建烟花粒子爆炸效果 - 更多粒子
+        const particleCount = 50;
+        const colors =
+          color ||
+          ["#ff6b6b", "#ffd93d", "#6bcf7f", "#4d96ff", "#a78bfa", "#ff66c4"][
+            Math.floor(Math.random() * 6)
+          ];
+
+        // 祝福语列表
+        const blessings = [
+          "自由",
+          "明媚",
+          "幸福",
+          "开心",
+          "美丽",
+          "快乐",
+          "灿烂",
+          "温柔",
+          "勇敢",
+          "优雅",
+          "闪耀",
+          "精彩",
+          "美好",
+          "甜蜜",
+          "阳光",
+          "可爱",
+          "浪漫",
+          "梦幻",
+          "绚烂",
+          "欢乐",
+          "暴富",
+        ];
+
+        // 在烟花中心创建祝福文字
+        const text = document.createElement("div");
+        text.className = "firework-text";
+        text.textContent =
+          blessings[Math.floor(Math.random() * blessings.length)];
+        text.style.left = x + "px";
+        text.style.top = y + "px";
+        text.style.color = colors;
+        document.body.appendChild(text);
+
+        setTimeout(() => text.remove(), 1500);
+
+        // 创建粒子
+        for (let i = 0; i < particleCount; i++) {
+          const particle = document.createElement("div");
+          particle.className = "firework-particle";
+          particle.style.background = colors;
+          particle.style.color = colors;
+
+          const angle = (Math.PI * 2 * i) / particleCount;
+          const velocity = 80 + Math.random() * 120; // 更大的爆炸范围
+          const tx = Math.cos(angle) * velocity;
+          const ty = Math.sin(angle) * velocity;
+
+          particle.style.left = x + "px";
+          particle.style.top = y + "px";
+          particle.style.setProperty("--tx", tx + "px");
+          particle.style.setProperty("--ty", ty + "px");
+
+          const duration = 1 + Math.random() * 0.5;
+          particle.style.animation = `fireworkExplode ${duration}s ease-out forwards`;
+          particle.style.animationDelay = Math.random() * 0.05 + "s";
+
+          document.body.appendChild(particle);
+
+          setTimeout(() => particle.remove(), (duration + 0.1) * 1000);
+        }
+      }
+
+      // 发射满屏烟花（持续不停，超密集）
+      let fireworkInterval = null;
+
+      function launchFireworks() {
+        const colors = [
+          "#ff6b6b",
+          "#ffd93d",
+          "#6bcf7f",
+          "#4d96ff",
+          "#a78bfa",
+          "#ff66c4",
+          "#ff1493",
+          "#00ced1",
+          "#ffa500",
+        ];
+
+        // 清除之前的烟花
+        if (fireworkInterval) {
+          clearInterval(fireworkInterval);
+        }
+
+        // 超密集发射（每 150ms 发射 3-5 个）
+        fireworkInterval = setInterval(() => {
+          // 每次发射 3-5 个烟花
+          const count = 3 + Math.floor(Math.random() * 3);
+
+          for (let i = 0; i < count; i++) {
+            setTimeout(() => {
+              // 随机位置发射烟花，覆盖全屏
+              const x = window.innerWidth * (0.05 + Math.random() * 0.9);
+              const y = window.innerHeight * (0.05 + Math.random() * 0.8);
+              const color = colors[Math.floor(Math.random() * colors.length)];
+
+              createFirework(x, y, color);
+            }, i * 30);
+          }
+        }, 150);
+      }
+
+      // 停止烟花
+      function stopFireworks() {
+        if (fireworkInterval) {
+          clearInterval(fireworkInterval);
+          fireworkInterval = null;
+        }
+      }
+
+      // 第一幕：开始体验
+      function startExperience() {
+        // 添加 started 类，触发背景和星空显示
+        document.body.classList.add("started");
+
+        // 隐藏第一幕
+        document.getElementById("scene1").classList.add("hidden");
+
+        // 尝试播放音乐（可能被浏览器阻止）
+        playMusic();
+
+        // 显示第二幕（等待星空完全淡入后）
+        setTimeout(() => {
+          document.getElementById("scene2").classList.add("active");
+          currentScene = 2;
+
+          // 等待按钮动画完成后启用点击（2.5s延迟 + 1s动画 = 3.5s）
+          setTimeout(() => {
+            const nextBtn = document.querySelector(".next-btn");
+            if (nextBtn) {
+              nextBtn.classList.add("active");
+            }
+          }, 3500);
+        }, 3500);
+      }
+
+      // 播放音乐
+      function playMusic() {
+        bgMusic
+          .play()
+          .then(() => {
+            musicControl.classList.add("visible");
+          })
+          .catch((err) => {
+            console.log("音乐播放被阻止，需要用户手动开启");
+          });
+      }
+
+      // 切换音乐
+      function toggleMusic() {
+        if (bgMusic.paused) {
+          bgMusic.play();
+          musicControl.classList.remove("paused");
+        } else {
+          bgMusic.pause();
+          musicControl.classList.add("paused");
+        }
+      }
+
+      // 第二幕：显示祝福卡片
+      // 魔法粒子生成器
+      let particleInterval = null;
+
+      function createMagicParticles() {
+        const scene3 = document.getElementById("scene3");
+
+        particleInterval = setInterval(() => {
+          const particle = document.createElement("div");
+          particle.className = "magic-particle";
+
+          // 随机位置
+          particle.style.left = Math.random() * 100 + "%";
+
+          // 随机漂移
+          particle.style.setProperty(
+            "--drift",
+            (Math.random() - 0.5) * 200 + "px"
+          );
+
+          // 随机持续时间
+          particle.style.animationDuration = 3 + Math.random() * 4 + "s";
+
+          // 随机延迟
+          particle.style.animationDelay = Math.random() * 2 + "s";
+
+          scene3.appendChild(particle);
+
+          // 粒子动画结束后移除
+          setTimeout(() => {
+            if (particle.parentNode) {
+              particle.remove();
+            }
+          }, 8000);
+        }, 200);
+      }
+
+      function stopMagicParticles() {
+        if (particleInterval) {
+          clearInterval(particleInterval);
+          particleInterval = null;
+          // 清除所有粒子
+          const particles = document.querySelectorAll(".magic-particle");
+          particles.forEach((p) => p.remove());
+        }
+      }
+
+      function showWishCard() {
+        // 移除按钮的 active 状态（避免重复点击）
+        const nextBtn = document.querySelector(".next-btn");
+        if (nextBtn) {
+          nextBtn.classList.remove("active");
+        }
+
+        document.getElementById("scene2").classList.remove("active");
+        setTimeout(() => {
+          document.getElementById("scene2").style.display = "none";
+          document.getElementById("scene3").classList.add("active");
+          currentScene = 3;
+        }, 500);
+      }
+
+      // 第三幕：翻开卡片
+      function openCard() {
+        if (!cardFlipped) {
+          document.getElementById("wishCard").classList.add("opened");
+          cardFlipped = true;
+        }
+      }
+
+      // 第三幕：显示许愿输入
+      function showWishInput() {
+        // 停止魔法粒子
+        stopMagicParticles();
+
+        document.getElementById("scene3").classList.remove("active");
+        setTimeout(() => {
+          document.getElementById("scene3").style.display = "none";
+          document.getElementById("scene4").classList.add("active");
+          currentScene = 4;
+          document.getElementById("wishInput").focus();
+        }, 500);
+      }
+
+      // 第四幕：生成愿望卡片
+      function createWishCard() {
+        const wishInput = document.getElementById("wishInput");
+        const wish = wishInput.value.trim();
+
+        if (!wish) {
+          alert("写点啥吧～");
+          return;
+        }
+
+        // 显示愿望卡片预览
+        document.getElementById("wishText").textContent = wish;
+        document.getElementById("wishTime").textContent =
+          new Date().toLocaleString("zh-CN", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+
+        // 切换显示
+        document.getElementById("wishInputContainer").style.display = "none";
+        document.getElementById("wishCardPreview").classList.add("active");
+      }
+
+      // 第四幕：重新编辑愿望
+      function editWish() {
+        document.getElementById("wishCardPreview").classList.remove("active");
+        document.getElementById("wishInputContainer").style.display = "block";
+        document.getElementById("wishInput").focus();
+      }
+
+      // 第四幕：发送愿望到星空
+      function sendWishToSky() {
+        const wish = document.getElementById("wishText").textContent;
+
+        // 保存愿望到本地存储
+        localStorage.setItem("birthdayWish", wish);
+        localStorage.setItem("wishTime", new Date().toISOString());
+
+        // 隐藏愿望卡片预览
+        document.getElementById("wishCardPreview").classList.remove("active");
+
+        // 创建愿望流星 - 从屏幕中心飞向左上角
+        const wishMeteor = document.createElement("div");
+        wishMeteor.className = "wish-meteor";
+        wishMeteor.textContent = wish;
+        wishMeteor.style.left = "50%";
+        wishMeteor.style.top = "50%";
+        document.body.appendChild(wishMeteor);
+
+        // 移除流星
+        setTimeout(() => wishMeteor.remove(), 3500);
+
+        // 愿望发送后立即开始密集的满屏烟花
+        setTimeout(() => {
+          launchFireworks();
+        }, 800);
+
+        // 显示结束场景（烟花继续）
+        setTimeout(() => {
+          document.getElementById("scene4").classList.remove("active");
+          setTimeout(() => {
+            document.getElementById("scene4").style.display = "none";
+            document.getElementById("scene5").classList.add("active");
+            currentScene = 5;
+          }, 500);
+        }, 4000);
+      }
+
+      // 第五幕：重新播放
+      function replay() {
+        // 停止烟花
+        stopFireworks();
+
+        // 停止魔法粒子
+        stopMagicParticles();
+
+        // 回到白屏状态
+        document.body.classList.remove("started");
+
+        // 重置所有场景
+        document.getElementById("scene1").classList.remove("hidden");
+        document.getElementById("scene2").classList.remove("active");
+        document.getElementById("scene2").style.display = "none";
+        document.getElementById("scene3").classList.remove("active");
+        document.getElementById("scene3").style.display = "none";
+        document.getElementById("scene4").classList.remove("active");
+        document.getElementById("scene4").style.display = "none";
+        document.getElementById("scene5").classList.remove("active");
+        document.getElementById("scene5").style.display = "none";
+
+        // 重置卡片
+        document.getElementById("wishCard").classList.remove("opened");
+        cardFlipped = false;
+
+        // 重置第四幕
+        document.getElementById("wishInput").value = "";
+        document.getElementById("wishInputContainer").style.display = "block";
+        document.getElementById("wishCardPreview").classList.remove("active");
+
+        // 重置下一步按钮状态
+        const nextBtn = document.querySelector(".next-btn");
+        if (nextBtn) {
+          nextBtn.classList.remove("active");
+        }
+
+        currentScene = 1;
+
+        // 滚动到顶部
+        window.scrollTo(0, 0);
+      }
+
+      // 页面加载完成后初始化
+      window.addEventListener("DOMContentLoaded", () => {
+        initStars();
+
+        // 检查是否有保存的愿望
+        const savedWish = localStorage.getItem("birthdayWish");
+        const wishTime = localStorage.getItem("wishTime");
+
+        if (savedWish && wishTime) {
+          console.log("上次的愿望：", savedWish);
+          console.log("许愿时间：", new Date(wishTime).toLocaleString());
+        }
+      });
+
+      // 回车生成愿望卡
+      document
+        .getElementById("wishInput")
+        ?.addEventListener("keypress", (e) => {
+          if (e.key === "Enter") {
+            createWishCard();
+          }
+        });
+    </script>
+  </body>
+</html>
